@@ -2,8 +2,8 @@ var webpack = require('webpack');
 
 module.exports = {
     entry: [
-        'webpack-dev-server/client?http://localhost:8080',
-        'webpack/hot/only-dev-server',
+        // 'webpack-dev-server/client?http://' + require("os").hostname() + ':8080/',
+        // 'webpack/hot/only-dev-server',
         './src/index.jsx'
     ],
     module: {
@@ -20,13 +20,13 @@ module.exports = {
     },
     output: {
         path: __dirname + '/dist',
-        publicPath: '/',
+        publicPath: '/dist',
         filename: 'bundle.js'
     },
-    devServer: {
-        contentBase: './dist'
-    },
-    plugins: [
-        new webpack.HotModuleReplacementPlugin()
-    ]
+    // devServer: {
+    //     contentBase: './dist'
+    // },
+    // plugins: [
+    //     new webpack.HotModuleReplacementPlugin()
+    // ]
 };

@@ -28,6 +28,7 @@ function tickets(ticketState = INITIAL_LIST_STATE, action) {
 function orders(orderState = INITIAL_LIST_STATE, action) {
     switch(action.type){
         case 'CREATE_ORDER':
+            console.log("reducer - create order");
             return createOrder(orderState, action.user, action.price, action.orderType);
         case 'READ_ORDER':
         case 'UPDATE_ORDER':
