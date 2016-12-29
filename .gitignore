@@ -4,3 +4,4 @@
 .idea/*
 /dist/bundle.js
 /dist/bundle.js.map
+/dist/static/*

@@ -10,17 +10,17 @@ import {fromJS} from 'immutable';
 
 import reducer from './reducer';
 import {OrderContainer} from './components/Order';
+import {ExchangeContainer} from './components/Exchange';
+import {EventContainer} from './components/Event';
 import {generateId} from '../util';
+import {createItem, closePendingEvent} from './action';
+
+// require("materialize-loader");
 
 const socket = io(`${location.protocol}//${location.hostname}:8888`);
 
 console.log("socket");
 console.log(socket);
-
-socket.on("connect", () => {
-    console.log("Connection!");
-    // socket.emit("testy", )
-});
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
@@ -40,6 +40,23 @@ export const store = createStore(
 );
 
 console.log("created store");
+
+socket.on("connect", () => {
+    console.log("Connection!");
+});
+
+socket.on("payload", (event) => {
+    console.log("received payload event");
+    console.log(event);
+    for(let i in event.payload){
+        console.log("item");
+        console.log(event.payload[i]);
+        store.dispatch(createItem(event.payload[i]));
+    }
+
+    store.dispatch(closePendingEvent(event.id));
+
+});
 
 // socket.on('state', state =>
 //     store.dispatch(setState(state))
@@ -79,6 +96,8 @@ ReactDOM.render(
     <Provider store={store}>
         <Router history={browserHistory}>
             <Route path="/" component={OrderContainer} />
+            <Route path="/event/:eventId" component={EventContainer} />
+            <Route path="/event/:eventId/ticket/:ticketId" component={ExchangeContainer} />
         </Router>
     </Provider>,
     document.getElementById('app')

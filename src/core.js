@@ -15,16 +15,22 @@ export function createOrder(orderState, user, price, orderType) {
     });
 }
 
-export function getOrdersByUser(orderState, user) {
+export function getOrdersByUser(orderState, user, ticket) {
     console.log("Core - GetOrdersByUser");
     console.log(orderState);
     console.log(user);
 
-    const userOrders = orderState.toJS().filter((order) => {
-        return order['user'] == user;
+    const userOrders = orderState.filter((order) => {
+        return order['user'] == user && order['ticket'] == ticket;
     });
 
     console.log(userOrders);
 
     return List(userOrders);
+}
+
+export function setOrders(orderState, orders) {
+    console.log("Core - setOrders");
+
+    return orderState.merge(orders);
 }

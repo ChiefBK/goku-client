@@ -31,10 +31,10 @@ export class Order extends React.PureComponent {
 
         // this.props.createOrder(this.props.user, this.state.price, this.state.type);
         if (this.state.type == 'buy') {
-            this.props.createBuyOrder(this.props.user.get('id'), this.state.price);
+            this.props.createOrder(this.props.user.get('id'), this.state.price);
         }
         else if (this.state.type == 'sell') {
-            this.props.createSellOrder(this.props.user.get('id'), this.state.price);
+            this.props.createOrder(this.props.user.get('id'), this.state.price);
         }
     }
 
