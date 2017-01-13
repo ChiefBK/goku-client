@@ -122,9 +122,9 @@ function failedAction(action) {
     }
 }
 
-function createPendingEvent(id, request) {
+function openPendingEvent(id, request) {
     return {
-        type: 'CREATE_PENDING_EVENT',
+        type: 'OPEN_PENDING_EVENT',
         id,
         request
     }
@@ -139,7 +139,7 @@ export function closePendingEvent(id) {
 
 export function createItem(item){
     return {
-        type: 'CREATE_' + item.model.toUpperCase(),
+        type: 'CREATE_' + item.get('model').toUpperCase(),
         item
     }
 }
@@ -176,7 +176,8 @@ function sendMessageToServer(sock, event, message) {
 export function fetchEvent(id){
     return function (dispatch, getState, socket){
         let eventId = generateId();
-        let request = {
+        let requestEvent = {
+            id: eventId,
             query: {
                 model: 'event',
                 properties: {
@@ -185,64 +186,46 @@ export function fetchEvent(id){
             }
         };
 
-        dispatch(createPendingEvent(eventId, request));
-        socket.emit('read', request);
+        dispatch(openPendingEvent(eventId, requestEvent));
+        socket.emit('read', requestEvent);
     }
 }
 
-export function createBuyOrder(user, price) {
-    console.log("middleware - createBuyOrder - " + user + " - " + price);
-    return function (dispatch, getState, socket) {
-
-        sendMessageToServer(socket, "action", createOrder(user, price, 'BUY')).then(
-            (response) => {
-                dispatch(response);
+export function fetchTicket(id){
+    return function(dispatch, getState, socket){
+        let eventId = generateId();
+        let requestEvent = {
+            id: eventId,
+            query: {
+                model: 'ticket',
+                properties: {
+                    id: id
+                }
             }
-        );
+        };
 
-    };
-}
-
-export function createSellOrder(user, price) {
-    console.log("middleware - createSellOrder - " + user + " - " + price);
-    return function (dispatch, getState, socket) {
-        dispatch(createOrder(user, price, 'SELL'));
+        dispatch(openPendingEvent(eventId, requestEvent));
+        socket.emit('read', requestEvent);
     }
 }
 
-export function createOrder(price, orderType, user, ticket) {
-
+export function fetchOrdersOfTicket(id) {
     return function (dispatch, getState, socket) {
-        const action = createOrder(price, orderType, user, ticket);
+        //TODO - send query to get all orders with same ID as ticket
 
-        dispatch(sendingAction(action));
-
-        sendMessageToServer(socket, 'action', action)
-            .then((response) => {
-                const todoAction = response.action;
-
-                dispatch(receivedResponse(action));
-                dispatch(todoAction);
-            })
-            .catch((error) => {
-                //TODO - check if invalid action or if error in processing
-
-            });
-    };
-}
-
-export function readOrdersOfTicket(ticket) {
-    console.log("middleware - readOrdersOfTicket - " + ticket);
-    return function (dispatch, getState, socket) {
-        dispatch(contactingRemote());
-
-        sendMessageToServer(socket, 'read', {
-            ticket: ticket
-        }).then(
-            (response) => {
-                dispatch(setOrdersOfTicket(fromJS(response)));
-                dispatch(stopContactingRemote());
+        let eventId = generateId();
+        let requestEvent = {
+            id: eventId,
+            query: {
+                model: 'order',
+                properties: {
+                    ticketID: id
+                },
+                levels: 1
             }
-        );
+        };
+
+        dispatch(openPendingEvent(eventId, requestEvent));
+        socket.emit('read', requestEvent);
     };
 }

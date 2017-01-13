@@ -1,5 +1,6 @@
 import {combineReducers} from 'redux-immutable';
-import {INITIAL_LIST_STATE, INITIAL_MAP_STATE, createOrder, setOrders} from './core';
+import {INITIAL_LIST_STATE, INITIAL_MAP_STATE, setOrders} from './core';
+import {fromJS} from 'immutable';
 
 function user(userState = INITIAL_MAP_STATE, action) {
     switch(action.type){
@@ -27,6 +28,7 @@ function events(eventState = INITIAL_LIST_STATE, action) {
 function tickets(ticketState = INITIAL_LIST_STATE, action) {
     switch(action.type){
         case 'CREATE_TICKET':
+            return ticketState.push(action.item);
         case 'READ_TICKET':
         case 'UPDATE_TICKET':
         case 'DELETE_TICKET':
@@ -38,8 +40,7 @@ function tickets(ticketState = INITIAL_LIST_STATE, action) {
 function orders(orderState = INITIAL_LIST_STATE, action) {
     switch(action.type){
         case 'CREATE_ORDER':
-            console.log("reducer - create order");
-            return createOrder(orderState, action.user, action.price, action.orderType);
+            return orderState.push(action.item);
         case 'READ_ORDER':
         case 'UPDATE_ORDER':
         case 'DELETE_ORDER':
@@ -48,6 +49,15 @@ function orders(orderState = INITIAL_LIST_STATE, action) {
     }
 
     return orderState;
+}
+
+function venues(venueState = INITIAL_LIST_STATE, action) {
+    switch (action.type){
+        case 'CREATE_VENUE':
+            return venueState.push(action.item);
+    }
+
+    return venueState;
 }
 
 function app(appState = INITIAL_MAP_STATE, action) {
@@ -63,9 +73,11 @@ function app(appState = INITIAL_MAP_STATE, action) {
 
 function pending(pendingState = INITIAL_MAP_STATE, action) {
     switch (action.type){
-        case 'CREATE_PENDING_EVENT':
+        case 'OPEN_PENDING_EVENT':
+            console.log("Opening event with id: " + action.id);
             return pendingState.set(action.id, action.request);
         case 'CLOSE_PENDING_EVENT':
+            console.log("Closing event with id: " + action.id);
             return pendingState.delete(action.id);
     }
 
@@ -77,6 +89,7 @@ const reducers = combineReducers({
     events,
     tickets,
     orders,
+    venues,
     app,
     pending
 });

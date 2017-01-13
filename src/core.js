@@ -1,4 +1,5 @@
 import {List, Map} from 'immutable';
+import Promise from 'bluebird';
 
 import {generateId} from '../util';
 
@@ -33,4 +34,35 @@ export function setOrders(orderState, orders) {
     console.log("Core - setOrders");
 
     return orderState.merge(orders);
+}
+
+export function findEventById(id, state){
+    const events = state.get('events');
+
+    return new Promise((resolve, reject) => {
+        console.log("finding event by id: " + id);
+        console.log("events:");
+        console.log(state.get('events').toJS());
+        let event = state.get('events').find((event) => {
+            console.log("looking at event with id: " + event.get('id'));
+            return event.get('id') == id;
+        }, this, null);
+        console.log(event);
+        while (event === undefined){}
+        console.log(event);
+        resolve(event);
+    });
+}
+
+export function findVenueById(id, state){
+    return new Promise((resolve, reject) => {
+        console.log("finding venue by id");
+        let venue = state.get('venues').find((venue) => {
+            return venue.get('id') == id;
+        });
+
+        while (venue === undefined){}
+
+        resolve(venue);
+    });
 }

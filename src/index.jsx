@@ -12,6 +12,7 @@ import reducer from './reducer';
 import {OrderContainer} from './components/Order';
 import {ExchangeContainer} from './components/Exchange';
 import {EventContainer} from './components/Event';
+import {TicketContainer} from './components/Ticket';
 import {generateId} from '../util';
 import {createItem, closePendingEvent} from './action';
 
@@ -49,9 +50,7 @@ socket.on("payload", (event) => {
     console.log("received payload event");
     console.log(event);
     for(let i in event.payload){
-        console.log("item");
-        console.log(event.payload[i]);
-        store.dispatch(createItem(event.payload[i]));
+        store.dispatch(createItem(fromJS(event.payload[i])));
     }
 
     store.dispatch(closePendingEvent(event.id));
@@ -97,7 +96,8 @@ ReactDOM.render(
         <Router history={browserHistory}>
             <Route path="/" component={OrderContainer} />
             <Route path="/event/:eventId" component={EventContainer} />
-            <Route path="/event/:eventId/ticket/:ticketId" component={ExchangeContainer} />
+            <Route path="/event/:eventId/ticket/:ticketId/" component={TicketContainer} />
+            <Route path="/event/:eventId/ticket/:ticketId/exchange" component={ExchangeContainer} />
         </Router>
     </Provider>,
     document.getElementById('app')

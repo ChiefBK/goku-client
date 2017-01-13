@@ -1,7 +1,10 @@
 import React from 'react';
 import {connect} from 'react-redux';
+import {toJS} from 'immutable';
 
 import * as actionCreators from '../action';
+import {findEventById, findVenueById} from '../core';
+import {DatetimeContainer} from '../components/Datetime';
 
 export class Event extends React.PureComponent {
     constructor(props) {
@@ -16,65 +19,78 @@ export class Event extends React.PureComponent {
     }
 
     render() {
+        // console.log(this.store.getState());
 
+        if(this.props.event){
+            return (
+                <div>
+                    <div id="event-header" className="row z-depth-1 no-margin">
+                        <div className="col s12 m3">
+                            <img id="event-image" src="https://consequenceofsound.files.wordpress.com/2016/01/lollapalooza-2015.png" alt="img test" className="circle responsive-img z-depth-3" />
+                        </div>
+                        <div className="col s12 m9">
+                            <h2 id="event-header-title">{this.props.event.name}</h2>
+                        </div>
+                    </div>
+                    <div id="event-subheader" className="row">
+                        <div className="col s6">
+                        </div>
+                        <div className="col s6">
 
-        return (
-            <div>
-                <div id="event-header" className="row z-depth-1 no-margin">
-                    <div className="col s12 m3">
-                        <img id="event-image" src="https://consequenceofsound.files.wordpress.com/2016/01/lollapalooza-2015.png" alt="img test" className="circle responsive-img z-depth-3" />
+                        </div>
                     </div>
-                    <div className="col s12 m9">
-                        {
-                            this.props.event ?
-                                <h2 id="event-header-title">{this.props.event.name}</h2> :
-                                <span>Loading...</span>
-                        }
+                    <div className="row">
+                        <div className="col s12">
+                            <div className="card-panel lighten-2 teal">
+                                {this.props.event.description}
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div id="event-subheader" className="row">
-                    <div className="col s6">
-                    </div>
-                    <div className="col s6">
+                    <div className="row">
+                        <div className="col s12 m6">
+                            <div className="card-panel lighten-2 orange">
+                                <DatetimeContainer dateTimeMillis={this.props.event.startDateTime} label="Doors Open"/>
+                                <DatetimeContainer dateTimeMillis={this.props.event.endDateTime} label="Event Ends"/>
+                            </div>
+                        </div>
+                        <div className="col s12 m6">
+                            <div className="card-panel lighten-2 red">
 
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div className="row">
-                    <div className="col s12">
-                        <div className="card-panel lighten-2 teal">
-                            This is a card panel with a teal lighten-2 class
+                    <div className="row">
+                        <div className="col s12">
+                            <div className="card-panel lighten-2 blue">
+                                performer description goes here
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div className="row">
-                    <div className="col s12 m6">
-                        <div className="card-panel lighten-2 orange">
-                            This is a card panel with a teal lighten-2 class
-                        </div>
-                    </div>
-                    <div className="col s12 m6">
-                        <div className="card-panel lighten-2 red">
-                            This is a card panel with a teal lighten-2 class
-                        </div>
-                    </div>
+            );
+        }
+        else{
+            return (
+                <div>
+                    Loading...
                 </div>
-                <div className="row">
-                    <div className="col s12">
-                        <div className="card-panel lighten-2 blue">
-                            This is a card panel with a teal lighten-2 class
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
+            );
+        }
     }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
+    const e = state.get('events').find((event) => {
+        return event.id == ownProps.params.eventId;
+    }, null, null);
+
+    const v = state.get('venues').find((venue) => {
+        return e.venueID == venue.id;
+    }, null, null);
+
     return {
-        event: state.get('events').find((event) => {
-            return event.id == this.props.params.eventId;
-        })
+        event: e,
+        venue: v
     };
 }
 
