@@ -10,16 +10,13 @@ export class Exchange extends React.PureComponent {
 
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            orderType: 'buy',
+            orderPrice: ''
+        };
     }
 
     componentWillMount() {
-        // console.log("url args");
-        // console.log(this.props.params);
-        // console.log(this.props.ticket);
-        // console.log(this.props.event);
-        // console.log(this.props.orders);
-
         if (!this.props.event) {
             this.props.fetchEvent(this.props.params.eventId);
         }
@@ -43,6 +40,29 @@ export class Exchange extends React.PureComponent {
 
     }
 
+    handleOrderTypeChange(e) {
+        this.setState({
+            orderType: e.target.value
+        });
+    }
+
+    handlePriceChange(e) {
+        this.setState({
+            orderPrice: e.target.value
+        });
+    }
+
+    handleOrderCreate(e) {
+        const user = 'ddddddddd';
+        this.props.createOrder({
+            model: 'order',
+            orderType: this.state.orderType,
+            price: parseFloat(this.state.orderPrice),
+            userID: user,
+            ticketID: this.props.params.ticketId
+        });
+    }
+
     render() {
         let buyOrders = [];
         let sellOrders = [];
@@ -54,7 +74,6 @@ export class Exchange extends React.PureComponent {
         }
 
         this.props.orders.forEach((order) => {
-            console.log(order);
             if (order.get('orderType') == 'buy') {
                 buyOrders.push(order);
             }
@@ -62,6 +81,17 @@ export class Exchange extends React.PureComponent {
                 sellOrders.push(order);
             }
         });
+
+        let sortAssending = (orderA, orderB) => {
+            return orderA.get('price') - orderB.get('price');
+        };
+
+        let sortDecending = (orderA, orderB) => {
+            return orderB.get('price') - orderA.get('price');
+        };
+
+        buyOrders = buyOrders.sort(sortAssending);
+        sellOrders = sellOrders.sort(sortAssending);
 
         return (
             <div>
@@ -98,6 +128,22 @@ export class Exchange extends React.PureComponent {
                         }
                         </tbody>
                     </table>
+                </div>
+                <div>
+                    <input type="text" onChange={this.handlePriceChange.bind(this)}/>
+                    <div>
+                        <label>
+                            <input type="radio" value="sell" checked={this.state.orderType == 'sell'} onChange={this.handleOrderTypeChange.bind(this)}/>
+                            Sell Order
+                        </label>
+                    </div>
+                    <div>
+                        <label>
+                            <input type="radio" value="buy" checked={this.state.orderType == 'buy'} onChange={this.handleOrderTypeChange.bind(this)}/>
+                            Buy Order
+                        </label>
+                    </div>
+                    <button onClick={this.handleOrderCreate.bind(this)}>Submit</button>
                 </div>
             </div>
         );

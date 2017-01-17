@@ -13,8 +13,11 @@ import {OrderContainer} from './components/Order';
 import {ExchangeContainer} from './components/Exchange';
 import {EventContainer} from './components/Event';
 import {TicketContainer} from './components/Ticket';
+import {DashboardContainer} from './components/Dashboard';
 import {generateId} from '../util';
 import {createItem, closePendingEvent} from './action';
+
+require("bootstrap-webpack");
 
 // require("materialize-loader");
 
@@ -49,7 +52,7 @@ socket.on("connect", () => {
 socket.on("payload", (event) => {
     console.log("received payload event");
     console.log(event);
-    for(let i in event.payload){
+    for (let i in event.payload) {
         store.dispatch(createItem(fromJS(event.payload[i])));
     }
 
@@ -57,53 +60,21 @@ socket.on("payload", (event) => {
 
 });
 
-// socket.on('state', state =>
-//     store.dispatch(setState(state))
-// );
-// [
-//     'connect',
-//     'connect_error',
-//     'connect_timeout',
-//     'reconnect',
-//     'reconnecting',
-//     'reconnect_error',
-//     'reconnect_failed'
-// ].forEach(ev =>
-//     socket.on(ev, () => store.dispatch(setConnectionState(ev, socket.connected)))
-// );
-
-// const createStoreWithMiddleware = applyMiddleware(
-//     remoteActionMiddleware(socket)
-// )(createStore);
-//
-// const store = createStoreWithMiddleware(reducer);
-// store.dispatch(setClientId(getClientId()));
-//
-// const routes = <Route component={App}>
-//     <Route path="/" component={VotingContainer} />
-//     <Route path="/results" component={ResultsContainer} />
-// </Route>;
-//
-// ReactDOM.render(
-//     <Provider store={store}>
-//         <Router history={hashHistory}>{routes}</Router>
-//     </Provider>,
-//     document.getElementById('app')
-// );
+socket.on("create", (event) => {
+    console.log('received create event');
+    store.dispatch(createItem(fromJS(event.payload)));
+    store.dispatch(closePendingEvent(event.id));
+});
 
 ReactDOM.render(
     <Provider store={store}>
         <Router history={browserHistory}>
-            <Route path="/" component={OrderContainer} />
-            <Route path="/event/:eventId" component={EventContainer} />
-            <Route path="/event/:eventId/ticket/:ticketId/" component={TicketContainer} />
-            <Route path="/event/:eventId/ticket/:ticketId/exchange" component={ExchangeContainer} />
+            <Route path="/" component={OrderContainer}/>
+            <Route path="/user/:userId/dashboard" component={DashboardContainer}/>
+            <Route path="/event/:eventId" component={EventContainer}/>
+            <Route path="/event/:eventId/ticket/:ticketId" component={TicketContainer}/>
+            <Route path="/event/:eventId/ticket/:ticketId/exchange" component={ExchangeContainer}/>
         </Router>
     </Provider>,
     document.getElementById('app')
 );
-
-// ReactDOM.render(
-//     <OrderContainer/>,
-//     document.getElementById('app')
-// );
