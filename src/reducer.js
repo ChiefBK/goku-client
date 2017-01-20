@@ -75,7 +75,7 @@ function pending(pendingState = INITIAL_MAP_STATE, action) {
     switch (action.type){
         case 'OPEN_PENDING_EVENT':
             console.log("Opening event with id: " + action.id);
-            return pendingState.set(action.id, action.request);
+            return pendingState.setIn([action.id, 'event'], action.event);
         case 'CLOSE_PENDING_EVENT':
             console.log("Closing event with id: " + action.id);
             return pendingState.delete(action.id);

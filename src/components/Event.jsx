@@ -3,7 +3,6 @@ import {connect} from 'react-redux';
 import {toJS} from 'immutable';
 
 import * as actionCreators from '../action';
-import {findEventById, findVenueById} from '../core';
 import {DatetimeContainer} from '../components/Datetime';
 
 export class Event extends React.PureComponent {

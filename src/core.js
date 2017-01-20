@@ -36,6 +36,10 @@ export function setOrders(orderState, orders) {
     return orderState.merge(orders);
 }
 
+export function findItemById(id, model, state){
+
+}
+
 export function findEventById(id, state){
     const events = state.get('events');
 

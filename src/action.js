@@ -3,11 +3,11 @@ import {fromJS} from 'immutable';
 
 import {generateId} from '../util';
 
-function openPendingEvent(id, request) {
+function openPendingEvent(id, event) {
     return {
         type: 'OPEN_PENDING_EVENT',
         id,
-        request
+        event
     }
 }
 
@@ -18,15 +18,75 @@ export function closePendingEvent(id) {
     }
 }
 
-export function createItem(item){
+export function createItem(item) {
     return {
         type: 'CREATE_' + item.get('model').toUpperCase(),
         item
     }
 }
 
-export function createOrder(item){
+export function createLocal(item){
+    return {
+        type: 'CREATE_' + item.get('model').toUpperCase(),
+        item
+    }
+}
+
+function waitForPendingEvent(id, state){
+    if (state.getIn(['pending', id, 'status']) == 'open'){
+        setTimeout(waitForPendingEvent(id, state), 50);
+    }
+}
+
+export function createRemote(item){
     return function (dispatch, getState, socket){
+        const eventId = generateId();
+
+        const event = {
+            id: eventId,
+            payload: item
+        };
+
+        dispatch(openPendingEvent(eventId, event));
+        socket.emit('create', event);
+
+    }
+}
+
+export function createEvent(item) {
+    return function (dispatch, getState, socket) {
+        item['id'] = generateId();
+        const eventId = generateId();
+
+        const event = {
+            id: eventId,
+            payload: item
+        };
+
+        dispatch(openPendingEvent(eventId, event));
+        socket.emit('create', event);
+
+
+    }
+}
+
+export function createTicket(item) {
+    return function (dispatch, getState, socket) {
+        item['id'] = generateId();
+        const eventId = generateId();
+
+        const event = {
+            id: eventId,
+            payload: item
+        };
+
+        dispatch(openPendingEvent(eventId, event));
+        socket.emit('create', event);
+    }
+}
+
+export function createOrder(item) {
+    return function (dispatch, getState, socket) {
         item['id'] = generateId();
         let eventId = generateId();
         let requestEvent = {
@@ -39,8 +99,8 @@ export function createOrder(item){
     }
 }
 
-export function fetchEvent(id){
-    return function (dispatch, getState, socket){
+export function fetchEvent(id) {
+    return function (dispatch, getState, socket) {
         let eventId = generateId();
         let requestEvent = {
             id: eventId,
@@ -57,8 +117,8 @@ export function fetchEvent(id){
     }
 }
 
-export function fetchTicket(id){
-    return function(dispatch, getState, socket){
+export function fetchTicket(id) {
+    return function (dispatch, getState, socket) {
         let eventId = generateId();
         let requestEvent = {
             id: eventId,
