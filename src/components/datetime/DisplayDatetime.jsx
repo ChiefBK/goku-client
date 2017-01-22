@@ -1,9 +1,9 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import * as actionCreators from '../action';
+import * as actionCreators from '../../action';
 
-export class Datetime extends React.PureComponent{
+export class DisplayDatetime extends React.PureComponent{
     render(){
         let dateTimeString;
         if(this.props.dateTimeMillis){
@@ -31,7 +31,7 @@ function mapStateToProps(state, ownProps){
     return {};
 }
 
-export const DatetimeContainer = connect(
+export const DisplayDatetimeContainer = connect(
     mapStateToProps,
     actionCreators
-)(Datetime);
+)(DisplayDatetime);

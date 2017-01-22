@@ -74,6 +74,12 @@ export function syncItem(id) {
 
         // Sends a read event to server asking for item with given id
         socket.emit('read', event);
+    }
+}
+
+export function syncGroup(id){
+    return function (dispatch, getState, socket) {
+        let eventId = generateId();
 
 
     }

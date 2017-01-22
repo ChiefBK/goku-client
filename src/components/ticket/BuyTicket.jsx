@@ -1,8 +1,8 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import * as actionCreators from '../action';
+import * as actionCreators from '../../action';
 
-class Ticket extends React.PureComponent {
+class BuyTicket extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -61,7 +61,7 @@ function mapStateToProps() {
     return {};
 }
 
-export const TicketContainer = connect(
+export const BuyTicketContainer = connect(
     mapStateToProps,
     actionCreators
-)(Ticket);
+)(BuyTicket);

@@ -11,12 +11,12 @@ import {fromJS} from 'immutable';
 import reducer from './reducer';
 import {WrapperContainer} from './components/Wrapper';
 import {WelcomeContainer} from './components/Welcome';
-import {ExchangeContainer} from './components/Exchange';
-import {EventContainer} from './components/Event';
-import {TicketContainer} from './components/Ticket';
-import {CreateEventFormContainer} from './components/dashboard/CreateEventForm';
-import {ManageEventContainer} from './components/dashboard/ManageEvent';
-import {DashboardContainer} from './components/dashboard/Dashboard';
+import {DisplayExchangeContainer} from './components/exchange/DisplayExchange';
+import {DisplayEventContainer} from './components/event/DisplayEvent';
+import {BuyTicketContainer} from './components/ticket/BuyTicket';
+import {CreateEventTopContainer} from './components/event/CreateEventTop';
+import {ManageEventsContainer} from './components/event/ManageEvents';
+import {DisplayDashboardContainer} from './components/dashboard/DisplayDashboard';
 import {generateId} from '../util';
 import {createItem, closePendingEvent} from './action';
 
@@ -71,12 +71,12 @@ ReactDOM.render(
             <Route path="/" component={WrapperContainer}>
                 <IndexRedirect to="/welcome" />
                 <Route path="/welcome" component={WelcomeContainer}/>
-                <Route path="user/:userId/dashboard" component={DashboardContainer}/>
-                <Route path="user/:userId/dashboard/createEvent" component={CreateEventFormContainer}/>
-                <Route path="user/:userId/dashboard/manageEvents" component={ManageEventContainer}/>
-                <Route path="event/:eventId" component={EventContainer}/>
-                <Route path="event/:eventId/ticket/:ticketId" component={TicketContainer}/>
-                <Route path="event/:eventId/ticket/:ticketId/exchange" component={ExchangeContainer}/>
+                <Route path="user/:userId/dashboard" component={DisplayDashboardContainer}/>
+                <Route path="user/:userId/dashboard/createEvent" component={CreateEventTopContainer}/>
+                <Route path="user/:userId/dashboard/manageEvents" component={ManageEventsContainer}/>
+                <Route path="event/:eventId" component={DisplayEventContainer}/>
+                <Route path="event/:eventId/ticket/:ticketId" component={BuyTicketContainer}/>
+                <Route path="event/:eventId/ticket/:ticketId/exchange" component={DisplayExchangeContainer}/>
             </Route>
         </Router>
     </Provider>,

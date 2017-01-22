@@ -3,11 +3,11 @@ import {connect} from 'react-redux';
 import _ from 'lodash';
 
 import * as actionCreators from '../../action';
-import {AutomationContainer} from './Automation';
-import {PatronAlertsContainer} from './PatronAlerts';
-import {CreateTicketContainer} from './CreateTicket';
+import {CreateAutomationContainer} from '../automation/CreateAutomation';
+import {CreatePatronAlertsContainer} from '../alert/CreatePatronAlerts';
+import {CreateTicketContainer} from '../ticket/CreateTicket';
 import {CreateEventContainer} from './CreateEvent';
-import {CreateVenueContainer} from './CreateVenue';
+import {CreateVenueContainer} from '../venue/CreateVenue';
 import {generateId} from '../../../util';
 
 class CreateEventForm extends React.PureComponent {
@@ -108,12 +108,12 @@ class CreateEventForm extends React.PureComponent {
                     </div>
                     <div className="row">
                         <div className="col-md-6">
-                            <PatronAlertsContainer/>
+                            <CreatePatronAlertsContainer/>
                         </div>
                     </div>
                     <div className="row">
                         <div className="col-md-6">
-                            <AutomationContainer/>
+                            <CreateAutomationContainer/>
                         </div>
                     </div>
                     <div className="row">
@@ -133,7 +133,7 @@ function mapStateToProps(state, ownProps) {
     };
 }
 
-export const CreateEventFormContainer = connect(
+export const CreateEventTopContainer = connect(
     mapStateToProps,
     actionCreators
 )(CreateEventForm);

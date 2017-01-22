@@ -2,10 +2,10 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {toJS} from 'immutable';
 
-import * as actionCreators from '../action';
-import {DatetimeContainer} from '../components/Datetime';
+import * as actionCreators from '../../action';
+import {DisplayDatetimeContainer} from '../datetime/DisplayDatetime';
 
-export class Event extends React.PureComponent {
+export class DisplayEvent extends React.PureComponent {
     constructor(props) {
         super(props);
     }
@@ -35,8 +35,8 @@ export class Event extends React.PureComponent {
                     <div className="row">
                         <div className="col-sm-12 col-md-6">
                             <h4>When</h4>
-                            <DatetimeContainer dateTimeMillis={this.props.event.get('startDateTime')} label="Doors Open"/>
-                            <DatetimeContainer dateTimeMillis={this.props.event.get('endDateTime')} label="Event Ends"/>
+                            <DisplayDatetimeContainer dateTimeMillis={this.props.event.get('startDateTime')} label="Doors Open"/>
+                            <DisplayDatetimeContainer dateTimeMillis={this.props.event.get('endDateTime')} label="Event Ends"/>
                         </div>
                         <div className="col-sm-12 col-md-6">
                             <h4>Where</h4>
@@ -77,7 +77,7 @@ function mapStateToProps(state, ownProps) {
     };
 }
 
-export const EventContainer = connect(
+export const DisplayEventContainer = connect(
     mapStateToProps,
     actionCreators
-)(Event);
+)(DisplayEvent);

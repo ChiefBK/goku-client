@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 
 import * as actionCreators from '../../action';
 
-export class PatronAlerts extends React.PureComponent {
+export class CreateAutomation extends React.PureComponent {
 
     constructor(props) {
         super(props);
@@ -13,7 +13,7 @@ export class PatronAlerts extends React.PureComponent {
     render() {
         return (
             <div>
-                <h3>Patron Alerts</h3>
+                <h4>Automate</h4>
             </div>
         );
     }
@@ -23,7 +23,7 @@ function mapStateToProps(state, ownProps) {
     return {};
 }
 
-export const PatronAlertsContainer = connect(
+export const CreateAutomationContainer = connect(
     mapStateToProps,
     actionCreators
-)(PatronAlerts);
+)(CreateAutomation);

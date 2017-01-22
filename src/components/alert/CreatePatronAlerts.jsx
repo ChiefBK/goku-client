@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 
 import * as actionCreators from '../../action';
 
-export class ManageEvent extends React.PureComponent {
+export class CreatePatronAlerts extends React.PureComponent {
 
     constructor(props) {
         super(props);
@@ -13,7 +13,7 @@ export class ManageEvent extends React.PureComponent {
     render() {
         return (
             <div>
-
+                <h3>Patron Alerts</h3>
             </div>
         );
     }
@@ -23,7 +23,7 @@ function mapStateToProps(state, ownProps) {
     return {};
 }
 
-export const ManageEventContainer = connect(
+export const CreatePatronAlertsContainer = connect(
     mapStateToProps,
     actionCreators
-)(ManageEvent);
+)(CreatePatronAlerts);

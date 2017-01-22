@@ -3,10 +3,10 @@ import {connect} from 'react-redux';
 import diff from 'immutablediff';
 import {List} from 'immutable';
 
-import * as actionCreators from '../action';
-import {getOrdersByUser} from '../core';
+import * as actionCreators from '../../action';
+import {getOrdersByUser} from '../../core';
 
-export class Exchange extends React.PureComponent {
+export class DisplayExchange extends React.PureComponent {
 
     constructor(props) {
         super(props);
@@ -18,11 +18,11 @@ export class Exchange extends React.PureComponent {
 
     componentWillMount() {
         if (!this.props.event) {
-            this.props.fetchEvent(this.props.params.eventId);
+            this.props.syncItem(this.props.params.eventId);
         }
 
         if (!this.props.ticket) {
-            this.props.fetchTicket(this.props.params.ticketId);
+            this.props.syncItem(this.props.params.ticketId);
         }
 
         if (!this.props.orders) {
@@ -151,19 +151,14 @@ export class Exchange extends React.PureComponent {
 }
 
 function mapStateToProps(state, ownProps) {
-    const ticket = state.get('tickets').find((ticket) => {
-        return ticket.get('id') == ownProps.params.ticketId;
-    });
-
-    const event = state.get('events').find((event) => {
-        return event.get('id') == ownProps.params.eventId;
-    });
+    const ticket = state.getIn(['items', ownProps.params.ticketId]);
+    const event = state.getIn(['items', ownProps.params.eventId]);
 
     let orders;
 
-    if (ticket !== undefined) {
-        orders = state.get('orders').filter((order) => {
-            return order.get('ticketID') == ticket.get('id');
+    if (ticket) {
+        orders = state.get('items').filter((item) => {
+            return item.get('model') == 'order' && item.get('ticketID') == ticket.get('id');
         });
     }
 
@@ -174,7 +169,7 @@ function mapStateToProps(state, ownProps) {
     };
 }
 
-export const ExchangeContainer = connect(
+export const DisplayExchangeContainer = connect(
     mapStateToProps,
     actionCreators
-)(Exchange);
+)(DisplayExchange);
