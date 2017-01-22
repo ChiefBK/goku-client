@@ -2,15 +2,15 @@ import React from 'react';
 import {connect} from 'react-redux';
 import _ from 'lodash';
 
-import * as actionCreators from '../action';
-import {AutomationContainer} from './dashboard/Automation';
-import {PatronAlertsContainer} from './dashboard/PatronAlerts';
-import {CreateTicketContainer} from './dashboard/CreateTicket';
-import {CreateEventContainer} from './dashboard/CreateEvent';
-import {CreateVenueContainer} from './dashboard/CreateVenue';
-import {generateId} from '../../util';
+import * as actionCreators from '../../action';
+import {AutomationContainer} from './Automation';
+import {PatronAlertsContainer} from './PatronAlerts';
+import {CreateTicketContainer} from './CreateTicket';
+import {CreateEventContainer} from './CreateEvent';
+import {CreateVenueContainer} from './CreateVenue';
+import {generateId} from '../../../util';
 
-class Dashboard extends React.PureComponent {
+class CreateEventForm extends React.PureComponent {
     constructor(props) {
         super(props);
 
@@ -64,6 +64,8 @@ class Dashboard extends React.PureComponent {
                 this.props.createRemote(order);
             }
         }
+
+
     }
 
     handleStateChange(key, val) {
@@ -88,7 +90,7 @@ class Dashboard extends React.PureComponent {
         }
         else{
             return (
-                <div className="container">
+                <div>
                     <div className="row">
                         <div className="col-md-6">
                             <CreateEventContainer handleInputChange={this.handleStateChange} handleCommaSeparatedInputChange={this.handleCommaSeparatedValues}/>
@@ -131,8 +133,8 @@ function mapStateToProps(state, ownProps) {
     };
 }
 
-export const DashboardContainer = connect(
+export const CreateEventFormContainer = connect(
     mapStateToProps,
     actionCreators
-)(Dashboard);
+)(CreateEventForm);
 

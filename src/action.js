@@ -20,21 +20,8 @@ export function closePendingEvent(id) {
 
 export function createItem(item) {
     return {
-        type: 'CREATE_' + item.get('model').toUpperCase(),
+        type: 'CREATE_ITEM',
         item
-    }
-}
-
-export function createLocal(item){
-    return {
-        type: 'CREATE_' + item.get('model').toUpperCase(),
-        item
-    }
-}
-
-function waitForPendingEvent(id, state){
-    if (state.getIn(['pending', id, 'status']) == 'open'){
-        setTimeout(waitForPendingEvent(id, state), 50);
     }
 }
 
@@ -53,67 +40,42 @@ export function createRemote(item){
     }
 }
 
-export function createEvent(item) {
-    return function (dispatch, getState, socket) {
-        item['id'] = generateId();
-        const eventId = generateId();
-
-        const event = {
-            id: eventId,
-            payload: item
-        };
-
-        dispatch(openPendingEvent(eventId, event));
-        socket.emit('create', event);
-
-
-    }
-}
-
-export function createTicket(item) {
-    return function (dispatch, getState, socket) {
-        item['id'] = generateId();
-        const eventId = generateId();
-
-        const event = {
-            id: eventId,
-            payload: item
-        };
-
-        dispatch(openPendingEvent(eventId, event));
-        socket.emit('create', event);
-    }
-}
-
-export function createOrder(item) {
-    return function (dispatch, getState, socket) {
-        item['id'] = generateId();
-        let eventId = generateId();
-        let requestEvent = {
-            id: eventId,
-            payload: item
-        };
-
-        dispatch(openPendingEvent(eventId, requestEvent));
-        socket.emit('create', requestEvent);
-    }
-}
-
-export function fetchEvent(id) {
+export function syncItem(id) {
     return function (dispatch, getState, socket) {
         let eventId = generateId();
-        let requestEvent = {
-            id: eventId,
-            query: {
-                model: 'event',
-                properties: {
-                    id: id
+        let event;
+
+        if (getState().hasIn(['items', id])){
+            console.log("State already has item - checking hash");
+            //Check if hash of item on client matches hash on server
+            event = {
+                id: eventId,
+                query: {
+                    properties:{
+                        id,
+                        hash: getState().getIn(['items', id, 'hash'])
+                    }
                 }
             }
-        };
+        }
+        else {
+            console.log("State doesn't have item - sending read event to server");
+            event = {
+                id: eventId,
+                query: {
+                    properties: {
+                        id
+                    }
+                }
+            };
+        }
 
-        dispatch(openPendingEvent(eventId, requestEvent));
-        socket.emit('read', requestEvent);
+        dispatch(openPendingEvent(eventId, event));
+
+        // Sends a read event to server asking for item with given id
+        socket.emit('read', event);
+
+
     }
 }
 

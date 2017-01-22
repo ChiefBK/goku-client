@@ -5,20 +5,22 @@ import * as actionCreators from '../action';
 
 export class Datetime extends React.PureComponent{
     render(){
-        let dateTime = new Date(this.props.dateTimeMillis);
+        let dateTimeString;
+        if(this.props.dateTimeMillis){
+            dateTimeString = new Date(this.props.dateTimeMillis).toLocaleString();
+        }
+        else{
+            dateTimeString = 'N/A';
+        }
 
         return (
             <div>
                 <span>
-                    {
-                        this.props.label
-                    }
+                    {this.props.label}
                     :
                 </span>
                 <span>
-                {
-                    dateTime.toLocaleString()
-                }
+                {dateTimeString}
                 </span>
             </div>
         );

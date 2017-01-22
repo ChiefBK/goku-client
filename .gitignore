@@ -3,3 +3,4 @@
 .idea
 .idea/*
 /dist/static/*
+/npm-debug.log

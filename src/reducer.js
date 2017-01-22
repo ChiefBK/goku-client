@@ -84,12 +84,31 @@ function pending(pendingState = INITIAL_MAP_STATE, action) {
     return pendingState;
 }
 
+function items(itemState = INITIAL_MAP_STATE, action){
+    switch(action.type){
+        case 'CREATE_ITEM':
+            console.log("Setting item in reducer");
+            return itemState.set(action.item.get('id'), action.item);
+        case 'UPDATE_ITEM':
+        case 'DELETE_ITEM':
+    }
+
+    return itemState;
+}
+
+function groups(groupState = INITIAL_MAP_STATE, action){
+    switch(action.type){
+        case 'CREATE_GROUP':
+        case 'UPDATE_GROUP':
+        case 'DELETE_GROUP':
+    }
+
+    return groupState;
+}
+
 const reducers = combineReducers({
-    user,
-    events,
-    tickets,
-    orders,
-    venues,
+    items,
+    groups,
     app,
     pending
 });

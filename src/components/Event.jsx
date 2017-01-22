@@ -11,58 +11,44 @@ export class Event extends React.PureComponent {
     }
 
     componentWillMount(){
-        if(this.props.event == null){
-            console.log("fetching event " + this.props.params.eventId);
-            this.props.fetchEvent(this.props.params.eventId);
-        }
+        console.log("fetching event " + this.props.params.eventId);
+        this.props.syncItem(this.props.params.eventId);
     }
 
     render() {
         // console.log(this.store.getState());
 
-        if(this.props.event){
+        if(this.props.event && this.props.venue){
             return (
                 <div>
-                    <div id="event-header" className="row z-depth-1 no-margin">
-                        <div className="col s12 m3">
-                            <img id="event-image" src="https://consequenceofsound.files.wordpress.com/2016/01/lollapalooza-2015.png" alt="img test" className="circle responsive-img z-depth-3" />
-                        </div>
-                        <div className="col s12 m9">
-                            <h2 id="event-header-title">{this.props.event.name}</h2>
-                        </div>
-                    </div>
-                    <div id="event-subheader" className="row">
-                        <div className="col s6">
-                        </div>
-                        <div className="col s6">
-
+                    <div id="event-header" className="row">
+                        <div className="col-sm-12">
+                            <h2>{this.props.event.get('name')}</h2>
                         </div>
                     </div>
                     <div className="row">
-                        <div className="col s12">
-                            <div className="card-panel lighten-2 teal">
-                                {this.props.event.description}
-                            </div>
+                        <div className="col-sm-12">
+                            <h4>Description</h4>
+                            {this.props.event.get('description')}
                         </div>
                     </div>
                     <div className="row">
-                        <div className="col s12 m6">
-                            <div className="card-panel lighten-2 orange">
-                                <DatetimeContainer dateTimeMillis={this.props.event.startDateTime} label="Doors Open"/>
-                                <DatetimeContainer dateTimeMillis={this.props.event.endDateTime} label="Event Ends"/>
-                            </div>
+                        <div className="col-sm-12 col-md-6">
+                            <h4>When</h4>
+                            <DatetimeContainer dateTimeMillis={this.props.event.get('startDateTime')} label="Doors Open"/>
+                            <DatetimeContainer dateTimeMillis={this.props.event.get('endDateTime')} label="Event Ends"/>
                         </div>
-                        <div className="col s12 m6">
-                            <div className="card-panel lighten-2 red">
-
-                            </div>
+                        <div className="col-sm-12 col-md-6">
+                            <h4>Where</h4>
+                            <div>{this.props.venue.get('name')}</div>
+                            <div>{this.props.venue.get('address')}</div>
+                            <div>{this.props.venue.get('phoneNumber')}</div>
                         </div>
                     </div>
                     <div className="row">
-                        <div className="col s12">
-                            <div className="card-panel lighten-2 blue">
-                                performer description goes here
-                            </div>
+                        <div className="col-sm-12">
+                            <h4>Performers</h4>
+                            performer description goes here
                         </div>
                     </div>
                 </div>
@@ -79,17 +65,15 @@ export class Event extends React.PureComponent {
 }
 
 function mapStateToProps(state, ownProps) {
-    const e = state.get('events').find((event) => {
-        return event.id == ownProps.params.eventId;
-    }, null, null);
-
-    const v = state.get('venues').find((venue) => {
-        return e.venueID == venue.id;
-    }, null, null);
+    const e = state.getIn(['items', ownProps.params.eventId]);
+    let v;
+    if (e){
+        v = state.getIn(['items', e.get('venueID')]);
+    }
 
     return {
         event: e,
-        venue: v
+        venue: v,
     };
 }
 

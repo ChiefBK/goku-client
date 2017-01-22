@@ -25,7 +25,7 @@ class Ticket extends React.PureComponent {
 
     render() {
         const firstPage = (
-            <div className="container">
+            <div>
                 <div className="row">
                     <div className="col-sm-12 col-md-6 col-md-offset-3">
                         <h3 className="text-center">How many tickets would you like?</h3>
