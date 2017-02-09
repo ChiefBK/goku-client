@@ -3,10 +3,10 @@ import {fromJS} from 'immutable';
 
 import {generateId} from '../util';
 
-function openPendingEvent(id, event) {
+function openPendingEvent(eventId, event) {
     return {
         type: 'OPEN_PENDING_EVENT',
-        id,
+        id: eventId,
         event
     }
 }
@@ -25,50 +25,55 @@ export function createItem(item) {
     }
 }
 
-export function createRemote(item){
+export function createGroup(group){
+    return {
+        type: 'CREATE_GROUP',
+        group
+    }
+}
+
+export function signInUser(user){
+    return {
+        type: 'SIGN_IN_USER',
+        user
+    }
+}
+
+export function signOutUser(){
+    return {
+        type: 'SIGN_OUT_USER'
+    }
+}
+
+export function createRemote(items, urlParams){
     return function (dispatch, getState, socket){
+        if(!Array.isArray(items)){
+            items = [items];
+        }
+
         const eventId = generateId();
 
         const event = {
-            id: eventId,
-            payload: item
+            eventId,
+            payload: items,
+            urlParams
         };
 
         dispatch(openPendingEvent(eventId, event));
         socket.emit('create', event);
-
     }
 }
 
-export function syncItem(id) {
+export function syncItem(id, urlParams) {
     return function (dispatch, getState, socket) {
-        let eventId = generateId();
-        let event;
+        const eventId = generateId();
+        const hash = getState().getIn(['items', id, 'hash']);
 
-        if (getState().hasIn(['items', id])){
-            console.log("State already has item - checking hash");
-            //Check if hash of item on client matches hash on server
-            event = {
-                id: eventId,
-                query: {
-                    properties:{
-                        id,
-                        hash: getState().getIn(['items', id, 'hash'])
-                    }
-                }
-            }
-        }
-        else {
-            console.log("State doesn't have item - sending read event to server");
-            event = {
-                id: eventId,
-                query: {
-                    properties: {
-                        id
-                    }
-                }
-            };
-        }
+        const event = {
+            eventId,
+            id,
+            hash: hash ? hash : ''
+        };
 
         dispatch(openPendingEvent(eventId, event));
 
@@ -77,11 +82,20 @@ export function syncItem(id) {
     }
 }
 
-export function syncGroup(id){
+export function syncGroupAndItems(ownerId){
     return function (dispatch, getState, socket) {
         let eventId = generateId();
+        const hash = getState().getIn(['groups', ownerId, 'hash']);
 
+        let event = {
+            eventId,
+            groupID: ownerId,
+            hash: hash ? hash : ''
+        };
 
+        dispatch(openPendingEvent(eventId, event));
+
+        socket.emit('read', event);
     }
 }
 

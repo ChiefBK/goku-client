@@ -26,7 +26,7 @@ export class DisplayExchange extends React.PureComponent {
         }
 
         if (!this.props.orders) {
-            this.props.fetchOrdersOfTicket(this.props.params.ticketId);
+            this.props.syncGroupAndItems(this.props.params.ticketId);
         }
     }
 
@@ -53,14 +53,18 @@ export class DisplayExchange extends React.PureComponent {
     }
 
     handleOrderCreate(e) {
-        const user = 'ddddddddd';
-        this.props.createOrder({
-            model: 'order',
-            orderType: this.state.orderType,
-            price: parseFloat(this.state.orderPrice),
-            userID: user,
-            ticketID: this.props.params.ticketId
-        });
+        if(this.props.user){
+            this.props.createRemote({
+                model: 'order',
+                orderType: this.state.orderType,
+                price: parseFloat(this.state.orderPrice),
+                userID: this.props.user.get('id'),
+                ticketID: this.props.params.ticketId
+            });
+        }
+        else{
+            //TODO - handle error (no user logged in)
+        }
     }
 
     render() {
@@ -153,6 +157,7 @@ export class DisplayExchange extends React.PureComponent {
 function mapStateToProps(state, ownProps) {
     const ticket = state.getIn(['items', ownProps.params.ticketId]);
     const event = state.getIn(['items', ownProps.params.eventId]);
+    const user = state.getIn(['app', 'user']);
 
     let orders;
 

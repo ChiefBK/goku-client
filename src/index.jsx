@@ -6,7 +6,7 @@ import {browserHistory, Router, Route, IndexRedirect} from 'react-router';
 import thunk from 'redux-thunk';
 import {applyMiddleware, createStore, compose} from 'redux';
 import io from 'socket.io-client';
-import {fromJS} from 'immutable';
+import {Map, fromJS} from 'immutable';
 
 import reducer from './reducer';
 import {WrapperContainer} from './components/Wrapper';
@@ -18,7 +18,7 @@ import {CreateEventTopContainer} from './components/event/CreateEventTop';
 import {ManageEventsContainer} from './components/event/ManageEvents';
 import {DisplayDashboardContainer} from './components/dashboard/DisplayDashboard';
 import {generateId} from '../util';
-import {createItem, closePendingEvent} from './action';
+import {createItem, createGroup, closePendingEvent, signInUser} from './action';
 
 require("bootstrap-webpack");
 
@@ -33,10 +33,7 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 export const store = createStore(
     reducer,
-    fromJS({
-        items: {},
-        groups: {}
-    }),
+    Map(),
     composeEnhancers(
         applyMiddleware(thunk.withExtraArgument(socket))
     )
@@ -44,26 +41,39 @@ export const store = createStore(
 
 console.log("created store");
 
+store.dispatch(signInUser({
+    id: generateId(),
+    model: 'user',
+    firstName: 'Ian',
+    lastName: 'Kingston',
+    email: 'iamking@gmail.com',
+    passwordHash: generateId()
+}));
+
 socket.on("connect", () => {
     console.log("Connection!");
 });
 
-socket.on("payload", (event) => {
-    console.log("received payload event");
+socket.on("create", (event) => {
+    console.log("received create event");
     console.log(event);
     for (let i in event.payload) {
-        store.dispatch(createItem(fromJS(event.payload[i])));
+        if (event.payload[i]['model'] == 'group') {
+            store.dispatch(createGroup(event.payload[i]));
+        }
+        else{
+            store.dispatch(createItem(event.payload[i]));
+        }
     }
 
-    store.dispatch(closePendingEvent(event.id));
-
+    store.dispatch(closePendingEvent(event.eventId));
 });
 
-socket.on("create", (event) => {
-    console.log('received create event');
-    store.dispatch(createItem(fromJS(event.payload)));
-    store.dispatch(closePendingEvent(event.id));
-});
+// socket.on("create", (event) => {
+//     console.log('received create event');
+//     store.dispatch(createItem(fromJS(event.payload)));
+//     store.dispatch(closePendingEvent(event.id));
+// });
 
 ReactDOM.render(
     <Provider store={store}>

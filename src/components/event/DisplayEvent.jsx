@@ -68,7 +68,7 @@ function mapStateToProps(state, ownProps) {
     const e = state.getIn(['items', ownProps.params.eventId]);
     let v;
     if (e){
-        v = state.getIn(['items', e.get('venueID')]);
+        v = state.getIn(['items', e.get('venueId_')]);
     }
 
     return {

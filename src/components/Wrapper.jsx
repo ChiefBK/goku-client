@@ -12,9 +12,20 @@ export class Wrapper extends React.PureComponent {
     }
 
     render() {
+        let userLink;
+
+        if (this.props.user) {
+            userLink = (
+                <Link to={`/user/${this.props.user.get('id')}`}>{this.props.user.get('firstName') + ' ' + this.props.user.get('lastName')}</Link>
+            );
+        }
+
         return (
             <div className="container">
-                <Link to={`/user/difdofdod/dashboard`}>Dashboard</Link>
+                <div>
+                    <Link to={`/user/difdofdod/dashboard`}>Dashboard</Link>
+                </div>
+                <div>{userLink}</div>
                 <br/><br/>
                 {this.props.children}
             </div>
@@ -23,7 +34,9 @@ export class Wrapper extends React.PureComponent {
 }
 
 function mapStateToProps(state, ownProps) {
-    return {};
+    return {
+        user: state.getIn(['app', 'user'])
+    };
 }
 
 export const WrapperContainer = connect(

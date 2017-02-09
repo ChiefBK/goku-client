@@ -21,38 +21,51 @@ class CreateEventForm extends React.PureComponent {
     }
 
     handleCreateEvent(e) {
-        const startDateTime = new Date(this.state.date);
-        startDateTime.setHours(this.state.time.split(':')[0]);
-        startDateTime.setMinutes(this.state.time.split(':')[1]);
+        const createPayload = [];
+
+        this.state.ticketTypes = ['general', 'vip'];
+        // const startDateTime = new Date(this.state.date);
+        const startDateTime = new Date('2017-6-8');
+        // startDateTime.setHours(this.state.time.split(':')[0]);
+        startDateTime.setHours(21);
+        startDateTime.setMinutes(0);
+        // startDateTime.setMinutes(this.state.time.split(':')[1]);
 
         const venue = {};
         venue.id = generateId();
-        venue.name = this.state.venue.name;
+        // venue.name = this.state.venue.name;
+        venue.name = 'the aragon';
         venue.model = 'venue';
-        venue.address = this.state.venue.address;
-        venue.phoneNumber = this.state.venue.phoneNumber;
-        this.props.createRemote(venue);
+        // venue.address = this.state.venue.address;
+        venue.address = '283 arrrr street';
+        venue.phoneNumber = '1234567890';
+        // venue.phoneNumber = this.state.venue.phoneNumber;
+        createPayload.push(venue);
 
         const event = {};
         event.id = generateId();
         event.model = 'event';
-        event.name = this.state.name;
-        event.description = this.state.description;
+        // event.name = this.state.name;
+        event.name = 'lolla';
+        // event.description = this.state.description;
+        event.description = 'descrip';
         event.startDateTime = startDateTime;
-        event.venueID = venue.id;
-        this.props.createRemote(event);
+        event.venueId_ = venue.id;
+        createPayload.push(event);
 
         for(let i in this.state.ticketTypes){
             let ticketType = this.state.ticketTypes[i];
-            const quantity = this.state.ticketDetails[ticketType]['quantity'];
-            const price = this.state.ticketDetails[ticketType]['price'];
+            const quantity = 5;
+            // const quantity = this.state.ticketDetails[ticketType]['quantity'];
+            // const price = this.state.ticketDetails[ticketType]['price'];
+            const price = 20;
 
             const ticket = {};
             ticket.id = generateId();
             ticket.model = 'ticket';
             ticket.ticketType = ticketType;
-            ticket.eventID = event.id;
-            this.props.createRemote(ticket);
+            ticket.eventId_ = event.id;
+            createPayload.push(ticket);
 
             for(let j = 0; j < quantity; j++){
                 const order = {};
@@ -60,11 +73,12 @@ class CreateEventForm extends React.PureComponent {
                 order.model = 'order';
                 order.orderType = 'sell';
                 order.price = price;
-                order.ticketID = ticket.id;
-                this.props.createRemote(order);
+                order.ticketId_ = ticket.id;
+                createPayload.push(order);
             }
         }
 
+        this.props.createRemote(createPayload, this.props.params);
 
     }
 
