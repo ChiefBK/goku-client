@@ -18,15 +18,15 @@ export class DisplayExchange extends React.PureComponent {
 
     componentWillMount() {
         if (!this.props.event) {
-            this.props.syncItem(this.props.params.eventId);
+            this.props.readItem(this.props.params.eventId, 0);
         }
 
         if (!this.props.ticket) {
-            this.props.syncItem(this.props.params.ticketId);
+            this.props.readItem(this.props.params.ticketId, 0);
         }
 
         if (!this.props.orders) {
-            this.props.syncGroupAndItems(this.props.params.ticketId);
+            this.props.readOrdersOfTicket(this.props.params.ticketId);
         }
     }
 
@@ -163,7 +163,7 @@ function mapStateToProps(state, ownProps) {
 
     if (ticket) {
         orders = state.get('items').filter((item) => {
-            return item.get('model') == 'order' && item.get('ticketID') == ticket.get('id');
+            return item.get('model') == 'order' && item.get('ticketId_') == ticket.get('id');
         });
     }
 

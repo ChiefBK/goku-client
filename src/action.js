@@ -25,29 +25,29 @@ export function createItem(item) {
     }
 }
 
-export function createGroup(group){
+export function createGroup(group) {
     return {
         type: 'CREATE_GROUP',
         group
     }
 }
 
-export function signInUser(user){
+export function signInUser(user) {
     return {
         type: 'SIGN_IN_USER',
         user
     }
 }
 
-export function signOutUser(){
+export function signOutUser() {
     return {
         type: 'SIGN_OUT_USER'
     }
 }
 
-export function createRemote(items, urlParams){
-    return function (dispatch, getState, socket){
-        if(!Array.isArray(items)){
+export function createRemote(items, urlParams) {
+    return function (dispatch, getState, socket) {
+        if (!Array.isArray(items)) {
             items = [items];
         }
 
@@ -64,7 +64,7 @@ export function createRemote(items, urlParams){
     }
 }
 
-export function syncItem(id, urlParams) {
+export function readItem(id, levels) {
     return function (dispatch, getState, socket) {
         const eventId = generateId();
         const hash = getState().getIn(['items', id, 'hash']);
@@ -72,7 +72,8 @@ export function syncItem(id, urlParams) {
         const event = {
             eventId,
             id,
-            hash: hash ? hash : ''
+            hash,
+            levels
         };
 
         dispatch(openPendingEvent(eventId, event));
@@ -82,7 +83,7 @@ export function syncItem(id, urlParams) {
     }
 }
 
-export function syncGroupAndItems(ownerId){
+export function syncGroupAndItems(ownerId) {
     return function (dispatch, getState, socket) {
         let eventId = generateId();
         const hash = getState().getIn(['groups', ownerId, 'hash']);
@@ -96,6 +97,27 @@ export function syncGroupAndItems(ownerId){
         dispatch(openPendingEvent(eventId, event));
 
         socket.emit('read', event);
+    }
+}
+
+export function readOrdersOfTicket(ticketId) {
+    return function (dispatch, getState, socket) {
+        let eventId = generateId();
+
+        let event = {
+            eventId,
+            query: {
+                properties: {
+                    model: 'order',
+                    ticketId_: ticketId
+                }
+            },
+            levels: 0
+        };
+
+        dispatch(openPendingEvent(eventId, event));
+
+        socket.emit('query', event);
     }
 }
 
