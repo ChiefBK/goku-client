@@ -5,23 +5,18 @@ module.exports = {
     entry: [
         // 'webpack-dev-server/client?http://' + require("os").hostname() + ':8080/',
         // 'webpack/hot/only-dev-server',
-        // "materialize-loader!./materialize.config.js",
-        // "bootstrap-webpack!./bootstrap.config.js",
+        './style.less',
         './src/index.jsx'
     ],
     module: {
         loaders: [
-            {
-                test: /\.jsx?$/,
-                exclude: /node_modules/,
-                loader: 'babel'
-            },
-            // {
-            //     test: /\.css$/,
-            //     loader: ExtractTextPlugin.extract({fallbackLoader: "style-loader", loader: "css-loader"})
-            // },
-            {test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "url?limit=10000&mimetype=application/font-woff"},
-            {test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "file"}
+            { test: /\.jsx?$/, exclude: /(node_modules|bower_components)/, loader: 'babel' },
+            { test: /\.css$/, loader: 'style-loader!css-loader' },
+            { test: /\.less$/, loader: 'style!css!less'},
+            { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file" },
+            { test: /\.(woff|woff2)$/, loader:"url?prefix=font/&limit=5000" },
+            { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=application/octet-stream" },
+            { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=image/svg+xml" }
         ]
     },
     resolve: {
@@ -41,6 +36,6 @@ module.exports = {
             $: "jquery",
             jQuery: "jquery"
         }),
-        // new ExtractTextPlugin("styles.css")
+    //     // new ExtractTextPlugin("styles.css")
     ]
 };

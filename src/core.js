@@ -40,6 +40,10 @@ export function findItemById(id, model, state){
 
 }
 
+export function sortOrdersAscending(orderA, orderB) {
+    return orderA.get('price') - orderB.get('price');
+}
+
 export function findEventById(id, state){
     const events = state.get('events');
 

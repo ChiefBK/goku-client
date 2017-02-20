@@ -1,18 +1,18 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import * as actionCreators from '../../action';
+import {ListTicketsContainer} from '../ticket/ListTickets'
 
 class BuyTicket extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            page: 1,
-            quantity: ''
+            page: 1
         };
     }
 
     handleQuantityChange(e) {
-        this.state.quantity = e.target.value;
+        this.state.quantity = parseInt(e.target.value);
     }
 
     handleNextPage(e) {
@@ -21,6 +21,20 @@ class BuyTicket extends React.PureComponent {
 
     handlePreviousPage(e) {
         this.setState({page: this.state.page - 1});
+    }
+
+    componentWillMount(){
+        if (!this.props.event) {
+            this.props.readItem(this.props.params.eventId, 0);
+        }
+
+        if (!this.props.ticket) {
+            this.props.readItem(this.props.params.ticketId, 0);
+        }
+
+        if (!this.props.sellOrders) {
+            this.props.readOrdersOfTicket(this.props.params.ticketId);
+        }
     }
 
     render() {
@@ -42,23 +56,33 @@ class BuyTicket extends React.PureComponent {
             </div>
         );
 
-        const secondPage = (
-            <div>
-                This is the second page
-            </div>
-        );
-
         if (this.state.page == 1) {
             return firstPage;
         }
         else {
-            return secondPage;
+            return (
+                <ListTicketsContainer quantity={this.state.quantity} ticket={this.props.ticket} event={this.props.event} sellOrders={this.props.sellOrders}/>
+            );
         }
     }
 }
 
-function mapStateToProps() {
-    return {};
+function mapStateToProps(state, ownProps) {
+    const ticket = state.getIn(['items', ownProps.params.ticketId]);
+    const event = state.getIn(['items', ownProps.params.eventId]);
+    let sellOrders;
+
+    if(ticket){
+        sellOrders = state.get('items').filter((item) => {
+            return item.get('ticketId_') == ticket.get('id') && item.get('orderType') === 'sell';
+        });
+    }
+
+    return {
+        ticket,
+        event,
+        sellOrders
+    };
 }
 
 export const BuyTicketContainer = connect(

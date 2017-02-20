@@ -2,6 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import diff from 'immutablediff';
 import {List} from 'immutable';
+import {CreateOrderContainer} from '../order/CreateOrder';
 
 import * as actionCreators from '../../action';
 import {getOrdersByUser} from '../../core';
@@ -10,10 +11,7 @@ export class DisplayExchange extends React.PureComponent {
 
     constructor(props) {
         super(props);
-        this.state = {
-            orderType: 'buy',
-            orderPrice: ''
-        };
+        this.state = {};
     }
 
     componentWillMount() {
@@ -38,33 +36,6 @@ export class DisplayExchange extends React.PureComponent {
         // console.log(difference);
 
 
-    }
-
-    handleOrderTypeChange(e) {
-        this.setState({
-            orderType: e.target.value
-        });
-    }
-
-    handlePriceChange(e) {
-        this.setState({
-            orderPrice: e.target.value
-        });
-    }
-
-    handleOrderCreate(e) {
-        if(this.props.user){
-            this.props.createRemote({
-                model: 'order',
-                orderType: this.state.orderType,
-                price: parseFloat(this.state.orderPrice),
-                userID: this.props.user.get('id'),
-                ticketID: this.props.params.ticketId
-            });
-        }
-        else{
-            //TODO - handle error (no user logged in)
-        }
     }
 
     render() {
@@ -112,7 +83,7 @@ export class DisplayExchange extends React.PureComponent {
                         {
                             buyOrders.map((order) => {
                                 return <tr>
-                                    <td>{order.get('price')}</td>
+                                    <td>{order.get('price').toFixed(2)}</td>
                                 </tr>
                             })
                         }
@@ -126,29 +97,14 @@ export class DisplayExchange extends React.PureComponent {
                         {
                             sellOrders.map((order) => {
                                 return <tr>
-                                    <td>{order.get('price')}</td>
+                                    <td>{order.get('price').toFixed(2)}</td>
                                 </tr>
                             })
                         }
                         </tbody>
                     </table>
                 </div>
-                <div>
-                    <input type="text" onChange={this.handlePriceChange.bind(this)}/>
-                    <div>
-                        <label>
-                            <input type="radio" value="sell" checked={this.state.orderType == 'sell'} onChange={this.handleOrderTypeChange.bind(this)}/>
-                            Sell Order
-                        </label>
-                    </div>
-                    <div>
-                        <label>
-                            <input type="radio" value="buy" checked={this.state.orderType == 'buy'} onChange={this.handleOrderTypeChange.bind(this)}/>
-                            Buy Order
-                        </label>
-                    </div>
-                    <button onClick={this.handleOrderCreate.bind(this)}>Submit</button>
-                </div>
+                <CreateOrderContainer ticket={this.props.ticket}/>
             </div>
         );
     }

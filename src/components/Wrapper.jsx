@@ -1,6 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {Link} from 'react-router';
+import sha512 from 'js-sha512';
 
 import * as actionCreators from '../action';
 
@@ -11,6 +12,10 @@ export class Wrapper extends React.PureComponent {
         this.state = {};
     }
 
+    login() {
+        this.props.authorizeUser('testemail@aol.com', sha512('012345'));
+    }
+
     render() {
         let userLink;
 
@@ -19,8 +24,14 @@ export class Wrapper extends React.PureComponent {
                 <Link to={`/user/${this.props.user.get('id')}`}>{this.props.user.get('firstName') + ' ' + this.props.user.get('lastName')}</Link>
             );
         }
+        else {
+            userLink = (
+                <a onClick={this.login.bind(this)}>Login</a>
+            );
+        }
 
         return (
+        <div className="body">
             <div className="container">
                 <div>
                     <Link to={`/user/difdofdod/dashboard`}>Dashboard</Link>
@@ -29,6 +40,7 @@ export class Wrapper extends React.PureComponent {
                 <br/><br/>
                 {this.props.children}
             </div>
+        </div>
         );
     }
 }

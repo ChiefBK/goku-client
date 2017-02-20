@@ -19,6 +19,7 @@ export class DisplayDashboard extends React.PureComponent {
                 <div><Link to={`${this.props.location.pathname}/manageEvents`}>Manage your Events</Link></div>
                 <div><Link to={`/event/abcdefg`}>Go to an event</Link></div>
                 <div><Link to={`/event/abcdefg/ticket/hijklmn/exchange`}>Go to an exchange</Link></div>
+                <div><Link to={`/event/abcdefg/ticket/hijklmn/buy`}>Buy a ticket</Link></div>
             </div>
         );
     }

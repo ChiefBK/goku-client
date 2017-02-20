@@ -13,6 +13,7 @@ import {WrapperContainer} from './components/Wrapper';
 import {WelcomeContainer} from './components/Welcome';
 import {DisplayExchangeContainer} from './components/exchange/DisplayExchange';
 import {DisplayEventContainer} from './components/event/DisplayEvent';
+import {DisplayUserContainer} from './components/user/DisplayUser';
 import {BuyTicketContainer} from './components/ticket/BuyTicket';
 import {CreateEventTopContainer} from './components/event/CreateEventTop';
 import {ManageEventsContainer} from './components/event/ManageEvents';
@@ -41,14 +42,14 @@ export const store = createStore(
 
 console.log("created store");
 
-store.dispatch(signInUser({
-    id: generateId(),
-    model: 'user',
-    firstName: 'Ian',
-    lastName: 'Kingston',
-    email: 'iamking@gmail.com',
-    passwordHash: generateId()
-}));
+// store.dispatch(signInUser({
+//     id: generateId(),
+//     model: 'user',
+//     firstName: 'Ian',
+//     lastName: 'Kingston',
+//     email: 'iamking@gmail.com',
+//     passwordHash: generateId()
+// }));
 
 socket.on("connect", () => {
     console.log("Connection!");
@@ -61,8 +62,22 @@ socket.on("create", (event) => {
         if (event.payload[i]['model'] == 'group') {
             store.dispatch(createGroup(event.payload[i]));
         }
-        else{
+        else {
             store.dispatch(createItem(event.payload[i]));
+        }
+    }
+
+    store.dispatch(closePendingEvent(event.eventId));
+});
+
+socket.on("auth", (event) => {
+    console.log("received auth event");
+    console.log(event);
+
+    const payload = event.payload;
+    for (let i in payload) {
+        if (payload[i].model === 'user') {
+            store.dispatch(signInUser(payload[i]));
         }
     }
 
@@ -79,13 +94,14 @@ ReactDOM.render(
     <Provider store={store}>
         <Router history={browserHistory}>
             <Route path="/" component={WrapperContainer}>
-                <IndexRedirect to="/welcome" />
-                <Route path="/welcome" component={WelcomeContainer}/>
+                <IndexRedirect to="/welcome"/>
+                <Route path="welcome" component={WelcomeContainer}/>
+                <Route path="user/:userId" component={DisplayUserContainer}/>
                 <Route path="user/:userId/dashboard" component={DisplayDashboardContainer}/>
                 <Route path="user/:userId/dashboard/createEvent" component={CreateEventTopContainer}/>
                 <Route path="user/:userId/dashboard/manageEvents" component={ManageEventsContainer}/>
                 <Route path="event/:eventId" component={DisplayEventContainer}/>
-                <Route path="event/:eventId/ticket/:ticketId" component={BuyTicketContainer}/>
+                <Route path="event/:eventId/ticket/:ticketId/buy" component={BuyTicketContainer}/>
                 <Route path="event/:eventId/ticket/:ticketId/exchange" component={DisplayExchangeContainer}/>
             </Route>
         </Router>

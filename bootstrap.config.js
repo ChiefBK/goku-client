@@ -1,5 +1,5 @@
 module.exports = {
-    styleLoader: require('extract-text-webpack-plugin').extract('style-loader', 'css-loader!less-loader'),
+    styleLoader: 'style-loader!css-loader!less-loader',
     scripts: {
         // add every bootstrap script you need
         'transition': true

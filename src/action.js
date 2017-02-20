@@ -45,7 +45,7 @@ export function signOutUser() {
     }
 }
 
-export function createRemote(items, urlParams) {
+export function createRemote(items) {
     return function (dispatch, getState, socket) {
         if (!Array.isArray(items)) {
             items = [items];
@@ -55,8 +55,7 @@ export function createRemote(items, urlParams) {
 
         const event = {
             eventId,
-            payload: items,
-            urlParams
+            payload: items
         };
 
         dispatch(openPendingEvent(eventId, event));
@@ -64,7 +63,7 @@ export function createRemote(items, urlParams) {
     }
 }
 
-export function readItem(id, levels) {
+export function readItem(id, levels = -1) {
     return function (dispatch, getState, socket) {
         const eventId = generateId();
         const hash = getState().getIn(['items', id, 'hash']);
@@ -77,25 +76,6 @@ export function readItem(id, levels) {
         };
 
         dispatch(openPendingEvent(eventId, event));
-
-        // Sends a read event to server asking for item with given id
-        socket.emit('read', event);
-    }
-}
-
-export function syncGroupAndItems(ownerId) {
-    return function (dispatch, getState, socket) {
-        let eventId = generateId();
-        const hash = getState().getIn(['groups', ownerId, 'hash']);
-
-        let event = {
-            eventId,
-            groupID: ownerId,
-            hash: hash ? hash : ''
-        };
-
-        dispatch(openPendingEvent(eventId, event));
-
         socket.emit('read', event);
     }
 }
@@ -116,46 +96,21 @@ export function readOrdersOfTicket(ticketId) {
         };
 
         dispatch(openPendingEvent(eventId, event));
-
         socket.emit('query', event);
     }
 }
 
-export function fetchTicket(id) {
+export function authorizeUser(email, passwordHash) {
     return function (dispatch, getState, socket) {
-        let eventId = generateId();
-        let requestEvent = {
-            id: eventId,
-            query: {
-                model: 'ticket',
-                properties: {
-                    id: id
-                }
-            }
+        const eventId = generateId();
+
+        const event = {
+            eventId,
+            email,
+            passwordHash
         };
 
-        dispatch(openPendingEvent(eventId, requestEvent));
-        socket.emit('read', requestEvent);
+        dispatch(openPendingEvent(eventId, event));
+        socket.emit('auth', event);
     }
-}
-
-export function fetchOrdersOfTicket(id) {
-    return function (dispatch, getState, socket) {
-        //TODO - send query to get all orders with same ID as ticket
-
-        let eventId = generateId();
-        let requestEvent = {
-            id: eventId,
-            query: {
-                model: 'order',
-                properties: {
-                    ticketID: id
-                },
-                levels: 1
-            }
-        };
-
-        dispatch(openPendingEvent(eventId, requestEvent));
-        socket.emit('read', requestEvent);
-    };
 }
