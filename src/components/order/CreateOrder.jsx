@@ -1,5 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
+import {List} from 'immutable';
 
 import * as actionCreators from '../../action';
 
@@ -21,18 +22,17 @@ export class CreateOrder extends React.PureComponent {
 
     handlePriceChange(e) {
         this.setState({
-            orderPrice: e.target.value
+            orderPrice: parseFloat(e.target.value)
         });
     }
 
     handleOrderCreate(e) {
         if(this.props.user){
-            this.props.createRemote({
-                model: 'order',
-                orderType: this.state.orderType,
-                price: parseFloat(this.state.orderPrice),
-                userId_: this.props.user.get('id'),
-                ticketId_: this.props.ticket.get('id')
+            const orderId = this.props.idleOrders.first().get('id');
+
+            this.props.updateRemote(orderId, {
+                status: 'active',
+                price: this.state.orderPrice
             });
         }
         else{
@@ -41,8 +41,19 @@ export class CreateOrder extends React.PureComponent {
     }
 
     render() {
+        if(!this.props.user){
+            return (
+                <div>
+                    You must be logged in to create orders
+                </div>
+            );
+        }
+
         return (
             <div>
+                <div>
+                    <h4>{this.props.idleOrders.size > 0 ? `You have ${this.props.idleOrders.size} tickets you may put on sale` : `You have no tickets or are not logged in`}</h4>
+                </div>
                 <input type="text" onChange={this.handlePriceChange.bind(this)}/>
                 <div>
                     <label>
@@ -65,8 +76,17 @@ export class CreateOrder extends React.PureComponent {
 function mapStateToProps(state, ownProps) {
     const user = state.getIn(['app', 'user']);
 
+    let idleOrders = List();
+
+    if(user){
+        idleOrders = this.props.orders.filter((order) => {
+            return order.get('userId_') == user.get('id') && order.get('status') == 'idle'
+        }, this);
+    }
+
     return {
-        user
+        user,
+        idleOrders
     };
 }
 

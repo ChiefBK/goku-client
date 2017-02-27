@@ -19,7 +19,7 @@ import {CreateEventTopContainer} from './components/event/CreateEventTop';
 import {ManageEventsContainer} from './components/event/ManageEvents';
 import {DisplayDashboardContainer} from './components/dashboard/DisplayDashboard';
 import {generateId} from '../util';
-import {createItem, createGroup, closePendingEvent, signInUser} from './action';
+import {createItem, closePendingEvent, signInUser, updateItem} from './action';
 
 require("bootstrap-webpack");
 
@@ -59,12 +59,7 @@ socket.on("create", (event) => {
     console.log("received create event");
     console.log(event);
     for (let i in event.payload) {
-        if (event.payload[i]['model'] == 'group') {
-            store.dispatch(createGroup(event.payload[i]));
-        }
-        else {
-            store.dispatch(createItem(event.payload[i]));
-        }
+        store.dispatch(createItem(event.payload[i]));
     }
 
     store.dispatch(closePendingEvent(event.eventId));
@@ -79,6 +74,18 @@ socket.on("auth", (event) => {
         if (payload[i].model === 'user') {
             store.dispatch(signInUser(payload[i]));
         }
+    }
+
+    store.dispatch(closePendingEvent(event.eventId));
+});
+
+socket.on('update', (event) => {
+    console.log("received update event");
+    console.log(event);
+
+    const payload = event.payload;
+    for (let i in payload) {
+        store.dispatch(updateItem(payload[i]['id'], payload[i]['properties']));
     }
 
     store.dispatch(closePendingEvent(event.eventId));

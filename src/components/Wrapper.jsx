@@ -12,8 +12,16 @@ export class Wrapper extends React.PureComponent {
         this.state = {};
     }
 
-    login() {
+    loginUser() {
         this.props.authorizeUser('testemail@aol.com', sha512('012345'));
+    }
+
+    loginClient(){
+        this.props.authorizeUser('thickness@gmail.com', sha512('012345'));
+    }
+
+    logoutUser(){
+        this.props.signOutUser();
     }
 
     render() {
@@ -21,12 +29,26 @@ export class Wrapper extends React.PureComponent {
 
         if (this.props.user) {
             userLink = (
-                <Link to={`/user/${this.props.user.get('id')}`}>{this.props.user.get('firstName') + ' ' + this.props.user.get('lastName')}</Link>
+                <div>
+                    <div>
+                        <Link to={`/user/${this.props.user.get('id')}`}>{this.props.user.get('firstName') + ' ' + this.props.user.get('lastName')}</Link>
+                    </div>
+                    <div>
+                        <a onClick={this.logoutUser.bind(this)}>Logout</a>
+                    </div>
+                </div>
             );
         }
         else {
             userLink = (
-                <a onClick={this.login.bind(this)}>Login</a>
+                <div>
+                    <div>
+                        <a onClick={this.loginUser.bind(this)}>Login User</a>
+                    </div>
+                    <div>
+                        <a onClick={this.loginClient.bind(this)}>Login Client</a>
+                    </div>
+                </div>
             );
         }
 

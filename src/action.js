@@ -1,7 +1,4 @@
-import Promise from 'bluebird';
-import {fromJS} from 'immutable';
-
-import {generateId} from '../util';
+import {generateId} from "../util";
 
 function openPendingEvent(eventId, event) {
     return {
@@ -25,10 +22,11 @@ export function createItem(item) {
     }
 }
 
-export function createGroup(group) {
+export function updateItem(id, properties){
     return {
-        type: 'CREATE_GROUP',
-        group
+        type: 'UPDATE_ITEM',
+        id,
+        properties
     }
 }
 
@@ -60,6 +58,29 @@ export function createRemote(items) {
 
         dispatch(openPendingEvent(eventId, event));
         socket.emit('create', event);
+    }
+}
+
+/**
+ *
+ * @param id - (int) the ID of the item to be updated
+ * @param properties - (object) an object containing the keys of the properties to change and the values to change them to
+ * @returns {Function}
+ */
+export function updateRemote(id, properties) {
+    return function (dispatch, getState, socket) {
+        const eventId = generateId();
+
+        const event = {
+            eventId,
+            payload: {
+                id,
+                properties
+            }
+        };
+
+        dispatch(openPendingEvent(eventId, event));
+        socket.emit('update', event);
     }
 }
 
@@ -98,6 +119,10 @@ export function readOrdersOfTicket(ticketId) {
         dispatch(openPendingEvent(eventId, event));
         socket.emit('query', event);
     }
+}
+
+export function activateOrder(orderId){
+    updateRemote(orderId, {status: 'active'});
 }
 
 export function authorizeUser(email, passwordHash) {

@@ -49,11 +49,13 @@ export class DisplayExchange extends React.PureComponent {
         }
 
         this.props.orders.forEach((order) => {
-            if (order.get('orderType') == 'buy') {
-                buyOrders.push(order);
-            }
-            else if (order.get('orderType') == 'sell') {
-                sellOrders.push(order);
+            if(order.get('status') === 'active'){
+                if (order.get('orderType') == 'buy') {
+                    buyOrders.push(order);
+                }
+                else if (order.get('orderType') == 'sell') {
+                    sellOrders.push(order);
+                }
             }
         });
 
@@ -83,9 +85,9 @@ export class DisplayExchange extends React.PureComponent {
                         {
                             buyOrders.map((order) => {
                                 return <tr>
-                                    <td>{order.get('price').toFixed(2)}</td>
+                                    <td>{order.get('price').toFixed(2)}</td><td>{this.props.user && this.props.user.get('id') == order.get('userId_') ? '*' : ''}</td>
                                 </tr>
-                            })
+                            }, this)
                         }
                         </tbody>
                     </table>
@@ -97,14 +99,14 @@ export class DisplayExchange extends React.PureComponent {
                         {
                             sellOrders.map((order) => {
                                 return <tr>
-                                    <td>{order.get('price').toFixed(2)}</td>
+                                    <td>{order.get('price').toFixed(2)}</td><td>{this.props.user && this.props.user.get('id') == order.get('userId_') ? '*' : ''}</td>
                                 </tr>
-                            })
+                            }, this)
                         }
                         </tbody>
                     </table>
                 </div>
-                <CreateOrderContainer ticket={this.props.ticket}/>
+                <CreateOrderContainer ticket={this.props.ticket} orders={this.props.orders}/>
             </div>
         );
     }
@@ -126,7 +128,8 @@ function mapStateToProps(state, ownProps) {
     return {
         ticket,
         event,
-        orders
+        orders,
+        user
     };
 }
 
