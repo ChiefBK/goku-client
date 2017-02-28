@@ -34,6 +34,8 @@ export class CreateOrder extends React.PureComponent {
                 status: 'active',
                 price: this.state.orderPrice
             });
+
+            this.priceInput.value = '';
         }
         else{
             //TODO - handle error (no user logged in)
@@ -54,7 +56,7 @@ export class CreateOrder extends React.PureComponent {
                 <div>
                     <h4>{this.props.idleOrders.size > 0 ? `You have ${this.props.idleOrders.size} tickets you may put on sale` : `You have no tickets or are not logged in`}</h4>
                 </div>
-                <input type="text" onChange={this.handlePriceChange.bind(this)}/>
+                <input type="text" onChange={this.handlePriceChange.bind(this)} ref={(input) => {this.priceInput = input}}/>
                 <div>
                     <label>
                         <input type="radio" value="sell" checked={this.state.orderType == 'sell'} onChange={this.handleOrderTypeChange.bind(this)}/>
@@ -67,7 +69,7 @@ export class CreateOrder extends React.PureComponent {
                         Buy Order
                     </label>
                 </div>
-                <button onClick={this.handleOrderCreate.bind(this)}>Submit</button>
+                <button disabled={this.props.idleOrders.size === 0} onClick={this.handleOrderCreate.bind(this)}>Submit</button>
             </div>
         );
     }

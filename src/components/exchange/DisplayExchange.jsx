@@ -1,11 +1,8 @@
-import React from 'react';
-import {connect} from 'react-redux';
-import diff from 'immutablediff';
-import {List} from 'immutable';
-import {CreateOrderContainer} from '../order/CreateOrder';
-
-import * as actionCreators from '../../action';
-import {getOrdersByUser} from '../../core';
+import React from "react";
+import {connect} from "react-redux";
+import {CreateOrderContainer} from "../order/CreateOrder";
+import {DisplayOrderContainer} from "../order/DisplayOrder";
+import * as actionCreators from "../../action";
 
 export class DisplayExchange extends React.PureComponent {
 
@@ -49,7 +46,7 @@ export class DisplayExchange extends React.PureComponent {
         }
 
         this.props.orders.forEach((order) => {
-            if(order.get('status') === 'active'){
+            if (order.get('status') === 'active') {
                 if (order.get('orderType') == 'buy') {
                     buyOrders.push(order);
                 }
@@ -84,9 +81,7 @@ export class DisplayExchange extends React.PureComponent {
                         <tbody>
                         {
                             buyOrders.map((order) => {
-                                return <tr>
-                                    <td>{order.get('price').toFixed(2)}</td><td>{this.props.user && this.props.user.get('id') == order.get('userId_') ? '*' : ''}</td>
-                                </tr>
+                                return <DisplayOrderContainer order={order} user={this.props.user}/>
                             }, this)
                         }
                         </tbody>
@@ -98,9 +93,7 @@ export class DisplayExchange extends React.PureComponent {
                         <tbody>
                         {
                             sellOrders.map((order) => {
-                                return <tr>
-                                    <td>{order.get('price').toFixed(2)}</td><td>{this.props.user && this.props.user.get('id') == order.get('userId_') ? '*' : ''}</td>
-                                </tr>
+                                return <DisplayOrderContainer order={order} user={this.props.user}/>
                             }, this)
                         }
                         </tbody>
