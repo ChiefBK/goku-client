@@ -1,7 +1,6 @@
 import {List, Map} from 'immutable';
 import Promise from 'bluebird';
-
-import {generateId} from '../util';
+import {generateId, Event} from 'en3-common';
 
 export const INITIAL_LIST_STATE = List();
 export const INITIAL_MAP_STATE = Map();

@@ -1,8 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import * as actionCreators from '../../action';
-
 export class CreateTicket extends React.PureComponent {
 
     constructor(props) {
@@ -74,6 +72,5 @@ function mapStateToProps(state, ownProps) {
 }
 
 export const CreateTicketContainer = connect(
-    mapStateToProps,
-    actionCreators
+    mapStateToProps
 )(CreateTicket);

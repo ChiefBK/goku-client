@@ -3,8 +3,6 @@ import {connect} from 'react-redux';
 import {Link} from 'react-router';
 import sha512 from 'js-sha512';
 
-import * as actionCreators from '../action';
-
 export class Wrapper extends React.PureComponent {
 
     constructor(props) {
@@ -68,12 +66,12 @@ export class Wrapper extends React.PureComponent {
 }
 
 function mapStateToProps(state, ownProps) {
-    return {
-        user: state.getIn(['app', 'user'])
-    };
+    // return {
+    //     user: state.getIn(['app', 'user'])
+    // };
+    return {};
 }
 
 export const WrapperContainer = connect(
-    mapStateToProps,
-    actionCreators
+    mapStateToProps
 )(Wrapper);

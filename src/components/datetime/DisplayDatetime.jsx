@@ -1,8 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import * as actionCreators from '../../action';
-
 export class DisplayDatetime extends React.PureComponent{
     render(){
         let dateTimeString;
@@ -32,6 +30,5 @@ function mapStateToProps(state, ownProps){
 }
 
 export const DisplayDatetimeContainer = connect(
-    mapStateToProps,
-    actionCreators
+    mapStateToProps
 )(DisplayDatetime);

@@ -1,8 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import * as actionCreators from '../../action';
-
 export class DisplayOrder extends React.PureComponent {
 
     constructor(props) {
@@ -38,6 +36,5 @@ function mapStateToProps(state, ownProps) {
 }
 
 export const DisplayOrderContainer = connect(
-    mapStateToProps,
-    actionCreators
+    mapStateToProps
 )(DisplayOrder);

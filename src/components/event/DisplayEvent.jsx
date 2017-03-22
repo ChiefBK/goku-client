@@ -2,7 +2,6 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {toJS} from 'immutable';
 
-import * as actionCreators from '../../action';
 import {DisplayDatetimeContainer} from '../datetime/DisplayDatetime';
 
 export class DisplayEvent extends React.PureComponent {
@@ -78,6 +77,5 @@ function mapStateToProps(state, ownProps) {
 }
 
 export const DisplayEventContainer = connect(
-    mapStateToProps,
-    actionCreators
+    mapStateToProps
 )(DisplayEvent);

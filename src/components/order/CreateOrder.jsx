@@ -2,8 +2,6 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {List} from 'immutable';
 
-import * as actionCreators from '../../action';
-
 export class CreateOrder extends React.PureComponent {
 
     constructor(props) {
@@ -28,14 +26,19 @@ export class CreateOrder extends React.PureComponent {
 
     handleOrderCreate(e) {
         if(this.props.user){
-            const orderId = this.props.idleOrders.first().get('id');
+            if(this.state.orderType === 'buy'){
 
-            this.props.updateRemote(orderId, {
-                status: 'active',
-                price: this.state.orderPrice
-            });
+            }
+            else{
+                const orderId = this.props.idleOrders.first().get('id');
 
-            this.priceInput.value = '';
+                this.props.updateRemote(orderId, {
+                    status: 'active',
+                    price: this.state.orderPrice
+                });
+
+                this.priceInput.value = '';
+            }
         }
         else{
             //TODO - handle error (no user logged in)
@@ -69,7 +72,7 @@ export class CreateOrder extends React.PureComponent {
                         Buy Order
                     </label>
                 </div>
-                <button disabled={this.props.idleOrders.size === 0} onClick={this.handleOrderCreate.bind(this)}>Submit</button>
+                <button onClick={this.handleOrderCreate.bind(this)}>Submit</button>
             </div>
         );
     }
@@ -93,6 +96,5 @@ function mapStateToProps(state, ownProps) {
 }
 
 export const CreateOrderContainer = connect(
-    mapStateToProps,
-    actionCreators
+    mapStateToProps
 )(CreateOrder);

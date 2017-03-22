@@ -1,8 +1,8 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import _ from 'lodash';
+import {bindActionCreators} from 'redux';
 
-import * as actionCreators from '../../action';
 import {CreateAutomationContainer} from '../automation/CreateAutomation';
 import {CreatePatronAlertsContainer} from '../alert/CreatePatronAlerts';
 import {CreateTicketContainer} from '../ticket/CreateTicket';
@@ -78,7 +78,7 @@ class CreateEventForm extends React.PureComponent {
             }
         }
 
-        this.props.createRemote(createPayload, this.props.params);
+        this.props.sendCreate(createPayload, this.props.params);
 
     }
 
@@ -147,8 +147,13 @@ function mapStateToProps(state, ownProps) {
     };
 }
 
+// function mapDispatchToProps(dispatch) {
+//     return bindActionCreators({
+//         remoteActions
+//     }, dispatch);
+// }
+
 export const CreateEventTopContainer = connect(
-    mapStateToProps,
-    actionCreators
+    mapStateToProps
 )(CreateEventForm);
 

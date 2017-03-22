@@ -1,7 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import * as actionCreators from '../action';
 import {getOrdersByUser} from '../core';
 
 export class Order extends React.PureComponent {
@@ -80,6 +79,5 @@ function mapStateToProps(state) {
 }
 
 export const OrderContainer = connect(
-    mapStateToProps,
-    actionCreators
+    mapStateToProps
 )(Order);

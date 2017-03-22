@@ -2,7 +2,6 @@ import React from "react";
 import {connect} from "react-redux";
 import {CreateOrderContainer} from "../order/CreateOrder";
 import {DisplayOrderContainer} from "../order/DisplayOrder";
-import * as actionCreators from "../../action";
 
 export class DisplayExchange extends React.PureComponent {
 
@@ -127,6 +126,5 @@ function mapStateToProps(state, ownProps) {
 }
 
 export const DisplayExchangeContainer = connect(
-    mapStateToProps,
-    actionCreators
+    mapStateToProps
 )(DisplayExchange);

@@ -1,6 +1,5 @@
 import React from "react";
 import {connect} from "react-redux";
-import * as actionCreators from "../../action";
 import {sortOrdersAscending} from "../../core";
 import {Link} from 'react-router';
 
@@ -103,6 +102,5 @@ function mapStateToProps(state, ownProps) {
 }
 
 export const ListTicketsContainer = connect(
-    mapStateToProps,
-    actionCreators
+    mapStateToProps
 )(ListTickets);

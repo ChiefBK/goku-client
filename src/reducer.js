@@ -1,7 +1,5 @@
 import {combineReducers} from "redux-immutable";
-import {INITIAL_MAP_STATE} from "./core";
-import {fromJS} from "immutable";
-import {Item} from "en3-common";
+import {fromJS, Map} from "immutable";
 
 function app(appState = INITIAL_MAP_STATE, action) {
     switch (action.type) {
@@ -14,7 +12,7 @@ function app(appState = INITIAL_MAP_STATE, action) {
     return appState;
 }
 
-function pending(pendingState = INITIAL_MAP_STATE, action) {
+export function pending(pendingState = Map(), action) {
     switch (action.type) {
         case 'OPEN_PENDING_EVENT':
             console.log("Opening event with id: " + action.id);
@@ -39,11 +37,3 @@ function items(itemState = INITIAL_MAP_STATE, action) {
 
     return itemState;
 }
-
-const reducers = combineReducers({
-    items,
-    app,
-    pending
-});
-
-export default reducers;

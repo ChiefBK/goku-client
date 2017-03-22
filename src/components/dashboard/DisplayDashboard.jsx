@@ -1,7 +1,6 @@
 import React from "react";
 import {connect} from "react-redux";
 import {Link} from "react-router";
-import * as actionCreators from "../../action";
 
 export class DisplayDashboard extends React.PureComponent {
 
@@ -59,6 +58,5 @@ function mapStateToProps(state, ownProps) {
 }
 
 export const DisplayDashboardContainer = connect(
-    mapStateToProps,
-    actionCreators
+    mapStateToProps
 )(DisplayDashboard);
