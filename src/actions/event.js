@@ -19,3 +19,16 @@ export function sendCreateEvent(id, userId, name, startDateTime, endDateTime, de
         socket.emit('create-event', outgoingEvent.toObject());
     }
 }
+
+export function sendReadEvent(id, tier = 'full') {
+    return function (dispatch, getState, socket) {
+        const eventId = generateId();
+        const outgoingEvent = new Event(eventId);
+
+        outgoingEvent.id = id;
+        outgoingEvent.tier = tier;
+
+        dispatch(openPendingEvent(eventId, outgoingEvent.toObject()));
+        socket.emit('read-event', outgoingEvent.toObject());
+    };
+}

@@ -1,23 +1,47 @@
-import React from 'react';
-import {connect} from 'react-redux';
-import {toJS} from 'immutable';
-
-import {DisplayDatetimeContainer} from '../datetime/DisplayDatetime';
+import React from "react";
+import {connect} from "react-redux";
+import {bindActionCreators} from "redux";
+import * as eventActions from "../../actions/event";
+import {DisplayDatetimeContainer} from "../datetime/DisplayDatetime";
 
 export class DisplayEvent extends React.PureComponent {
     constructor(props) {
         super(props);
     }
 
-    componentWillMount(){
+    componentWillMount() {
         console.log("fetching event " + this.props.params.eventId);
-        this.props.syncItem(this.props.params.eventId);
+        this.props.sendReadEvent(this.props.params.eventId);
     }
 
     render() {
         // console.log(this.store.getState());
+        if (this.props.pendingEvents.size == 0 && this.props.event) {
+            const ticketsAndOrders = [];
 
-        if(this.props.event && this.props.venue){
+            const tickets = this.props.event.get('tickets');
+
+            tickets.forEach((ticket) => {
+                ticketsAndOrders.push(
+                    <div className="row">
+                        <div className="col-sm-3">
+                            <h4>{ticket.get('name')}</h4>
+                        </div>
+                    </div>
+                );
+
+                const orders = ticket.get('orders');
+                orders.forEach((order) => {
+                    ticketsAndOrders.push(
+                        <div className="row">
+                            <div className="col-sm-3">{order.get('price')}</div>
+                            <div className="col-sm-3">{order.get('orderType')}</div>
+                            <div className="col-sm-3">{order.get('status')}</div>
+                        </div>
+                    );
+                });
+            });
+
             return (
                 <div>
                     <div id="event-header" className="row">
@@ -39,9 +63,9 @@ export class DisplayEvent extends React.PureComponent {
                         </div>
                         <div className="col-sm-12 col-md-6">
                             <h4>Where</h4>
-                            <div>{this.props.venue.get('name')}</div>
-                            <div>{this.props.venue.get('address')}</div>
-                            <div>{this.props.venue.get('phoneNumber')}</div>
+                            <div>{this.props.event.get('venue').first().get('name')}</div>
+                            <div>{this.props.event.get('venue').first().get('address')}</div>
+                            <div>{this.props.event.get('venue').first().get('phoneNumber')}</div>
                         </div>
                     </div>
                     <div className="row">
@@ -50,10 +74,14 @@ export class DisplayEvent extends React.PureComponent {
                             performer description goes here
                         </div>
                     </div>
+                    <div className="row">
+                        <h3>Tickets</h3>
+                        {ticketsAndOrders}
+                    </div>
                 </div>
             );
         }
-        else{
+        else {
             return (
                 <div>
                     Loading...
@@ -64,18 +92,22 @@ export class DisplayEvent extends React.PureComponent {
 }
 
 function mapStateToProps(state, ownProps) {
-    const e = state.getIn(['items', ownProps.params.eventId]);
-    let v;
-    if (e){
-        v = state.getIn(['items', e.get('venueId_')]);
-    }
+    const event = state.getIn(['events', ownProps.params.eventId]);
+    const pendingEvents = state.get('pending');
 
     return {
-        event: e,
-        venue: v,
+        event,
+        pendingEvents
     };
 }
 
+function mapDispatchToProps(dispatch) {
+    const allActions = Object.assign({}, eventActions);
+
+    return bindActionCreators(allActions, dispatch);
+}
+
 export const DisplayEventContainer = connect(
-    mapStateToProps
+    mapStateToProps,
+    mapDispatchToProps
 )(DisplayEvent);
