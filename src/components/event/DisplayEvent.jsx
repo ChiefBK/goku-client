@@ -20,6 +20,7 @@ export class DisplayEvent extends React.PureComponent {
             const ticketsAndOrders = [];
 
             const tickets = this.props.event.get('tickets');
+            let cheapestOrder;
 
             tickets.forEach((ticket) => {
                 ticketsAndOrders.push(
@@ -32,6 +33,9 @@ export class DisplayEvent extends React.PureComponent {
 
                 const orders = ticket.get('orders');
                 orders.forEach((order) => {
+                    if((!cheapestOrder && order.get('price')) || (cheapestOrder && cheapestOrder.get('price') > order.get('price')))
+                        cheapestOrder = order;
+
                     ticketsAndOrders.push(
                         <div className="row">
                             <div className="col-sm-3">{order.get('price')}</div>
@@ -47,6 +51,14 @@ export class DisplayEvent extends React.PureComponent {
                     <div id="event-header" className="row">
                         <div className="col-sm-12">
                             <h2>{this.props.event.get('name')}</h2>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-sm-12">
+                            <div>
+                                Current Price: {cheapestOrder ? cheapestOrder.get('price') : 'No tickets on sale'}
+                            </div>
+                            <button>Buy</button>
                         </div>
                     </div>
                     <div className="row">
